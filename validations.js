@@ -33,7 +33,7 @@ const authenticationAge = (req, res, next) => {
 
 const authenticationTalk = (req, res, next) => {
   const { talk } = req.body;
-  if (!talk || !talk.watchedAt || !talk.rate) {
+  if (!talk || !talk.watchedAt || (!talk.rate && talk.rate !== 0)) {
     return res.status(400).json({ 
       message: 'O campo "talk" é obrigatório e "watchedAt" e "rate" não podem ser vazios',
      });
@@ -54,7 +54,7 @@ const authenticationTalkDate = (req, res, next) => {
 
 const authenticationRate = (req, res, next) => {
   const { talk } = req.body;
-  if (parseInt(talk.rate, 10) < 1 || parseInt(talk.rate, 10) > 5) {
+  if (talk.rate < 1 || talk.rate > 5 || !Number.isInteger(talk.rate)) {
     return res.status(400).json({ message: 'O campo "rate" deve ser um inteiro de 1 à 5' });
   }
   next();

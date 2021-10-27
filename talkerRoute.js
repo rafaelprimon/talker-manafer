@@ -54,4 +54,26 @@ router.post('/',
     }
   });
 
+  router.put('/:id',
+  authenticatonToken,
+  authenticationName,
+  authenticationAge,
+  authenticationTalk,
+  authenticationTalkDate,
+  authenticationRate,
+  async (req, res) => {
+    const { name, age, talk } = req.body;
+    const { id } = req.params;
+    try {
+      const talkers = await readFile('./talker.json', 'utf-8');
+      const getDataTalker = await JSON.parse(talkers);
+      const editTalker = getDataTalker.filter((talker) => talker.id !== parseInt(id, 10));
+      editTalker.push({ id: parseInt(id, 10), name, age, talk });
+      await writeFile('./talker.json', JSON.stringify(editTalker));
+      return res.status(200).json({ id: parseInt(id, 10), name, age, talk });
+    } catch (error) {
+      return error;
+    }
+  });
+
 module.exports = router;
