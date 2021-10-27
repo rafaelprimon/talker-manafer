@@ -1,11 +1,7 @@
 const express = require('express');
+const generateToken = require('./createToken');
 
 const router = express.Router(); 
-
-const crypto = require('crypto');
-
-const generateToken = () => crypto.randomBytes(16).toString('hex');
-// https://qastack.com.br/programming/8855687/secure-random-token-in-node-js 
 
 const checksEmail = (req, res, next) => {
   const { email } = req.body;
@@ -23,21 +19,21 @@ const checksEmail = (req, res, next) => {
 
 const checksPassword = (req, res, next) => {
   const { password } = req.body;
-  const passwordLenght = 5;
+  const passwordLength = 5;
   if (!password) {
     return res.status(400).json({ message: 'O campo "password" é obrigatório' });
   }
   if (password === ' ') {
     return res.status(400).json({ message: 'O campo "password" é obrigatório' });
   }
-  if (password.length <= passwordLenght) {
+  if (password.length <= passwordLength) {
     return res.status(400).json({ message: 'O "password" deve ter pelo menos 6 caracteres' });
   }
   next(); 
 };
 
-router.post('/', generateToken, checksEmail, checksPassword, (req, res, _next) => {
-  res.status(200).json({ token: generateToken() });
+router.post('/', checksEmail, checksPassword, (_req, res, _next) => {
+  res.status(200).json({ token: generateToken(16) });
 });
 
 module.exports = router;
