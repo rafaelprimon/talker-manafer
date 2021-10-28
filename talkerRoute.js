@@ -12,6 +12,27 @@ const {
   authenticationRate,
 } = require('./validations');
 
+router.get('/search', 
+authenticatonToken,
+authenticationName,
+authenticationAge,
+authenticationTalk,
+authenticationTalkDate,
+authenticationRate,
+ async (req, res) => {
+  const { searchTerm } = req.params;
+  try {
+    const talkers = await readFile(jsonTalker, 'utf-8');
+    const getDataTalker = JSON.parse(talkers);
+    const searchTalker = getDataTalker.find((talker) => talker.name.includes(searchTerm));
+    if (searchTalker) {
+    return res.status(200).json(searchTalker);
+    }
+  } catch (error) {
+    return res.status(200).send([]);
+  }
+});
+
 router.get('/', async (_req, res) => {
   try {
     const talkers = await readFile(jsonTalker, 'utf-8');
